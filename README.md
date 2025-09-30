@@ -79,8 +79,8 @@ Git 설정하고 초기화하기
 3. git config --local user.name "git 계정"
 4. git config --local user.email "git 이메일"
 
-git push 5. git add . / git add -A : git ignore를 제외한 모든 파일을 Staging Area로 올림
-git 구성 영역
+5. git add . / git add -A : git ignore를 제외한 모든 파일을 Staging Area로 올림
+   1. git 구성 영역
 
 - Working Directory (작업 디렉토리)
   파일은 수정되었지만, git add를 하지 않아서 스테이징 영역에는 없는 상태를 의미.
@@ -113,7 +113,8 @@ git 구성 영역
 
 - commit 1개 이하: 그냥 git 초기화를 해라
 - commit 2개 이상: git reset HEAD~숫자 (숫자만큼의 commit을 되돌리겠다)
-  HEAD앞에 오는 옵션
+
+  1. HEAD앞에 오는 옵션
 
   - --mixed: 기본값, 커밋 취소 + 작업 내역 Working Directory 영역에 배치
   - --soft: 커밋 취소 + 작업 내역 staging area 영역에 배치
@@ -135,6 +136,33 @@ git 구성 영역
 - github 원격 저장소
 - git 로컬 저장소
 
-```
+11. 원격 저장소를 등록
 
-```
+- git remote add 식별자 원격레포주소
+- git remote add origin 원격레포주소
+- git remote add stream 원격레포주소
+- 확인: git remote -v
+
+12. git push -u origin 브랜치 명
+    origin:원격 레포 식별자 (관례)
+    main 브랜치를 사용하는 것이 규칙.
+
+에러 - permission
+: remote 등록 주소 확인, 계정 일치 확인, 팀 프로젝트일 경우 초대 확인
+
+13. git branch(가지)
+
+- 하나의 저장소 안에서 독립적으로 작업할 수 있는 개발 라인을 말합니다.
+- 과거 사용: git chexkout -b 브랜치명
+- 현재 사용: git switch -c 브랜치명
+- git branch -v
+
+  1. 기능: feature/기능명
+  2. 버그: fix/버그명
+  3. 긴급 수정: hotfix/긴급수정명
+  4. 문서: docs/문서명
+  5. 설정/빌드: chore/설정빌드명
+  6. 리팩토링: refactor/리펙토리명
+     예시: git switch -c feature/social-login
+
+  주의: main 브랜치는 절대로 개발하지 않는다. 합치는 용도로만 사용
