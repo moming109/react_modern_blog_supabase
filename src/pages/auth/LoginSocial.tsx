@@ -1,18 +1,33 @@
 import { Link } from "react-router";
 import { Github } from "lucide-react";
+import supabase from "../../utils/supabase";
 
 export default function LoginSocial() {
   const handleGoogleLogin = () => {
     console.log("Google login");
   };
 
-  const handleGithubLogin = () => {
+  const handleGithubLogin = async () => {
     console.log("Github login");
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "github",
+        options: {
+          //URL 고정이므로 run dev 중첩에 유의할 것
+          redirectTo: `${import.meta.env.VITE_URL}/login`,
+        },
+      });
+      if (error) throw error;
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleKakaoLogin = () => {
     console.log("Kakao login");
   };
+
+  //개선 코드 작성하기
 
   return (
     <div className="max-w-md mx-auto">

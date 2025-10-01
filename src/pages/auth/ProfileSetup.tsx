@@ -1,21 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { User, Mail, FileText, Save } from "lucide-react";
+import supabase from "../../utils/supabase";
+import type { Claims } from "../../types/user";
 
 export default function ProfileSetup() {
   const navigate = useNavigate();
+  const [claims, setClaims] = useState<Claims>(null);
+  const [isLoding, setIsLoding] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     bio: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would save the profile data
     console.log("Profile setup completed:", formData);
-    // Redirect to profile page after setup
-    navigate("/profile");
+
+    if (!formData?.name || !formData?.email || !formData?.bio) {
+      alert("값을 입력해주세요");
+      return;
+    }
+    if (!claims) {
+      alert("claims 값이 올바르지 않습니다.");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({
+          email: formData.email,
+          display_name: formData.name,
+          bio: formData.bio,
+        })
+        .eq("id", claims.sub) //무조건 eq를 넣어야 함. 아니면 모든 데이터가 업데이트 됨
+        .select();
+
+      if (error) throw error;
+      if (data) {
+        navigate("/blog");
+      }
+      alert("회원가입 완료");
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleInputChange = (
@@ -28,6 +59,48 @@ export default function ProfileSetup() {
     }));
   };
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setIsLoding(true);
+      try {
+        const { data, error } = await supabase.auth.getClaims();
+        if (error) throw error;
+        const claims = data?.claims as Claims;
+        setClaims(claims);
+
+        //profiles 테이블의 데이터를 모두 조회하는 구문 -> 필터 걸기
+        const { data: profiles, error: profilesError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", claims?.sub || "")
+          .single();
+
+        if (profilesError) throw profilesError;
+
+        if (profiles.bio) {
+          navigate("/blog");
+        }
+
+        setFormData({
+          name: profiles?.display_name || "",
+          email: profiles?.email || "",
+          bio: profiles?.bio || "",
+        });
+        console.log(profiles);
+
+        // console.log(claims);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoding(false);
+      }
+    };
+    fetchProfile();
+  }, [navigate]);
+
+  // 로딩중이면 페이지 null
+  if (isLoding) return null;
+  // 로딩 끝나면 페이지 보여짐
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-8">
