@@ -166,3 +166,9 @@ Git 설정하고 초기화하기
      예시: git switch -c feature/social-login
 
   주의: main 브랜치는 절대로 개발하지 않는다. 합치는 용도로만 사용
+
+14. git push -u origin feature/supabase-setting
+    최초 push는 -u를 붙여야함.
+
+15. git pull
+    원격->로컬에서 업데이트
