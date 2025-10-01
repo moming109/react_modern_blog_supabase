@@ -6,9 +6,9 @@ import type { Profile } from "../types/profile";
 import supabase from "../utils/supabase";
 
 type AuthStore = {
-  isLoading: boolean; // 로딩 상태
-  claims: Claims; // 사용자 정보
-  profile: unknown; // Profile테이블의 데이터
+  isLoading: boolean; // 데이터 패칭 로딩 여부
+  claims: Claims; // JWTPayload 사용자 정보
+  profile: Profile | null; // Profile테이블의 데이터
   setProfile: (profile: Profile | null) => void;
   setClaims: (c: Claims) => void; //사용자 정보 업데이트 함수
   hydrateFromAuth: () => void;

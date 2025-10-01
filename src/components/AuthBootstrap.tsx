@@ -16,9 +16,5 @@ export default function AuthBootstrap() {
     //구독 해지 useEffect cleanUp과 비슷한 원리
     return () => sub.subscription.unsubscribe();
   }, [hydrateFromAuth, clearAuth]);
-  return (
-    <>
-      <h1>AuthBootstrap Component</h1>
-    </>
-  );
+  return <></>;
 }
