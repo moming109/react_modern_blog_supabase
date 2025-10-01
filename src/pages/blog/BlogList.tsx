@@ -9,6 +9,7 @@ type Post = Database["public"]["Tables"]["posts"]["Row"];
 export default function BlogList() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const getPosts = async () => {
       setIsLoading(true);
@@ -23,6 +24,27 @@ export default function BlogList() {
       }
     };
     getPosts();
+
+    //구독
+    const channel = supabase
+      .channel("posts")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT", // UPDATE, DELETE도 가능하다!
+          schema: "public",
+          table: "posts",
+        },
+        (payload) => {
+          setPosts((posts) => [...posts, payload.new as Post]);
+          console.log(payload);
+        }
+      )
+      .subscribe((status) => console.log(status));
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return (

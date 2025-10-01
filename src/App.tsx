@@ -27,6 +27,7 @@ export default function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="profile-setup" element={<ProfileSetup />} />
             <Route path="blog/create" element={<BlogCreate />} />
+            <Route path="edit/:id" element={<BlogCreate />} />
           </Route>
         </Route>
       </Routes>
