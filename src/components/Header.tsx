@@ -1,18 +1,14 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
 import { Menu, X } from "lucide-react";
+import { useAuthStore } from "../stores/authStore";
 
 export default function Header() {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // Mock user state - in real app, this would come from context/state management
-  const [isLoggedIn] = useState(false);
-  const [user] = useState({
-    name: "John Doe",
-    avatar:
-      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&fit=crop",
-  });
+  //주스탄드에서 가져온 데이터
+  const profile = useAuthStore((state) => state.profile);
 
   const isActive = (path: string) => {
     return location.pathname === path || location.pathname.startsWith(path);
@@ -50,16 +46,16 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-            {isLoggedIn ? (
+            {profile ? (
               <div className="flex items-center ml-6 pl-6 border-l border-gray-200">
                 <Link
                   to="/profile"
                   className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
-                  title={`Go to ${user.name}'s profile`}
+                  title={`Go to ${profile.display_name}'s profile`}
                 >
                   <img
-                    src={user.avatar}
-                    alt={user.name}
+                    src={profile.avatar_url || ""}
+                    alt={profile.display_name || ""}
                     className="w-8 h-8 rounded-full object-cover border-2 border-gray-200 hover:border-gray-300 transition-colors"
                   />
                 </Link>
@@ -103,7 +99,7 @@ export default function Header() {
                   {item.label}
                 </Link>
               ))}
-              {isLoggedIn ? (
+              {profile ? (
                 <div className="pt-4 border-t border-gray-100">
                   <Link
                     to="/profile"
@@ -111,12 +107,12 @@ export default function Header() {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <img
-                      src={user.avatar}
-                      alt={user.name}
+                      src={profile.avatar_url || ""}
+                      alt={profile.display_name || ""}
                       className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
                     />
                     <span className="text-sm font-medium text-gray-900">
-                      {user.name}
+                      {profile.display_name || ""}
                     </span>
                   </Link>
                 </div>
